@@ -28,7 +28,7 @@ Reaction.init({
     type: DataTypes.INTEGER,
     references: {
       model: 'user',
-      key: 'username',
+      key: 'id',
     },
   },
   created_at: {
