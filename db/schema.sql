@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS socal_api_db;
+CREATE DATABASE socal_api_db;
