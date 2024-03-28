@@ -16,11 +16,21 @@ async function seed(req, res) {
   const usersData = await User.bulkCreate(users);
   const thoughtsData = await Thought.bulkCreate(thoughts);
 
-  const reactions = getReactionObject(10, users, thoughtsData.map(e => e.toJSON()))
+  const reactions = getReactionObject(100, users, thoughtsData.map(e => e.toJSON()))
   const reactionsData = await Reaction.bulkCreate(reactions);
 
   console.log(thoughtsData);
-  res.status(201).json({ msg: 'seeded', usersData, thoughtsData, reactionsData });
+  res.status(201).json({
+    msg: 'seeded',
+    size: {
+      users: usersData.length,
+      thoughts: thoughtsData.length,
+      reactions: reactionsData.length
+    },
+    usersData,
+    thoughtsData,
+    reactionsData
+  });
 }
 
 /**
