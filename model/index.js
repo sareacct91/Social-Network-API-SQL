@@ -12,8 +12,12 @@ Reaction.belongsTo(User, {targetKey: 'username', foreignKey: 'username' });
 Thought.hasMany(Reaction, { foreignKey: 'thought_id' });
 Reaction.belongsTo(Thought, { foreignKey: 'thought_id' });
 
-User.belongsToMany(User, { as: 'user', through: 'userFriends', uniqueKey: 'user_id'});
-User.belongsToMany(User, { as: 'friend', through: ' userFriends', uniqueKey: 'friend_id' });
+User.belongsToMany(User, {
+  as: 'friend',
+  through: 'userFriends',
+  foreignKey: 'user_id',
+  otherKey: 'friend_id',
+});
 
 module.exports = {
   User,
