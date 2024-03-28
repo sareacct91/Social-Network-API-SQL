@@ -10,13 +10,22 @@ async function seed(req, res) {
   // drop all collections in db
   await sequelize.sync({ force: true });
 
-  const users = getUsersObject(50);
-  const thoughts = getThoughtObject(50, users);
+  const {
+    minUser = 10,
+    maxUser = 100,
+    minThought = 10,
+    maxThought = 100,
+    minReaction = 10,
+    maxReacction = 100
+  } = req.body;
+
+  const users = getUsersObject(randomNum(minUser, maxUser));
+  const thoughts = getThoughtObject(randomNum(minThought, maxThought), users);
 
   const usersData = await User.bulkCreate(users);
   const thoughtsData = await Thought.bulkCreate(thoughts);
 
-  const reactions = getReactionObject(100, users, thoughtsData.map(e => e.toJSON()))
+  const reactions = getReactionObject(randomNum(minReaction, maxReacction), users, thoughtsData.map(e => e.toJSON()))
   const reactionsData = await Reaction.bulkCreate(reactions);
 
   console.log(thoughtsData);
@@ -38,8 +47,8 @@ async function seed(req, res) {
  * @param {number} num upper bound of random gen
  * @returns {number} random gen between 0 and [num]
  */
-function randomNum(num) {
-  return Math.floor(Math.random() * (num + 1))
+function randomNum(min, max) {
+  return Math.floor(Math.random() * (max - min) + min)
 }
 
 /**
@@ -48,7 +57,7 @@ function randomNum(num) {
  * @returns {{username: string, email: string}[]}
  */
 function getUsersObject(num) {
-  const users = new Array(randomNum(num));
+  const users = new Array(num);
 
   for (let i = 0; i < users.length; i++) {
     const username = getRandomUser();
@@ -67,7 +76,7 @@ function getUsersObject(num) {
  * @returns {{thoughtText: string, username: string}}
  */
 function getThoughtObject(num, users) {
-  const thoughts = new Array(randomNum(num));
+  const thoughts = new Array(num);
 
   for (let i = 0; i < thoughts.length; i++) {
     const thoughtText = getThought();
@@ -86,7 +95,7 @@ function getThoughtObject(num, users) {
  * @returns {{reactionBody: string, thought_id: number, username: string}[]} array of reaction data
  */
 function getReactionObject(num, users, thoughts) {
-  const reactions = new Array(randomNum(num));
+  const reactions = new Array(num);
 
   for (let i = 0; i < reactions.length; i++) {
     const reactionBody = getReaction();
