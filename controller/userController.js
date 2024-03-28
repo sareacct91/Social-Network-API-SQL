@@ -123,13 +123,13 @@ module.exports = {
   async addFriend(req, res) {
     const { id, friendId } = req.params;
 
-    const tmp = await User.findByPk(id);
+    const tmp = await User.findByPk(+id);
 
     if (!tmp) {
       throw new NotFoundError(`No user found with id ${id}`);
     }
 
-    const user = await tmp.addFriend(friendId);
+    const user = await tmp.addFriend(+friendId);
 
     res.status(200).json({msg: 'success', user})
   }
