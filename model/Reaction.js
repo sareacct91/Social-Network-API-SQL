@@ -19,17 +19,22 @@ Reaction.init({
   },
   thought_id: {
     type: DataTypes.INTEGER,
+    allowNull: false,
     references: {
       model: 'thought',
       key: 'id',
     },
+    onDelete: 'CASCADE'
   },
-  user_id: {
-    type: DataTypes.INTEGER,
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
     references: {
       model: 'user',
-      key: 'id',
+      key: 'username',
     },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   },
   created_at: {
     type: DataTypes.DATE,

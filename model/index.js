@@ -3,11 +3,11 @@ const Thought = require("./Thought");
 const User = require("./User");
 
 
-User.hasMany(Thought, { foreignKey: 'user_id' });
-Thought.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Thought, { sourceKey: 'username', foreignKey: 'username' });
+Thought.belongsTo(User, { targetKey: 'username' ,foreignKey: 'username' });
 
-User.hasMany(Reaction, { foreignKey: 'user_id' });
-Reaction.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Reaction, {sourceKey: 'username', foreignKey: 'username' });
+Reaction.belongsTo(User, {targetKey: 'username', foreignKey: 'username' });
 
 Thought.hasMany(Reaction, { foreignKey: 'thought_id' });
 Reaction.belongsTo(Thought, { foreignKey: 'thought_id' });
