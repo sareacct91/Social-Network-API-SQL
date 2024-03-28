@@ -129,8 +129,31 @@ module.exports = {
       throw new NotFoundError(`No user found with id ${id}`);
     }
 
-    const user = await tmp.addFriend(+friendId);
+    const result = await tmp.addFriend(+friendId);
 
-    res.status(200).json({msg: 'success', user})
+    res.status(200).json({ msg: 'success', result });
+  },
+
+  /**
+   * @param {import('express').Request} req epxress Request Object
+   * @param {import('express').Response} res express Response Object
+   */
+  async removeFriend(req, res) {
+    const { id, friendId } = req.params;
+
+    const tmp = await User.findByPk(+id);
+
+    if (!tmp) {
+      throw new NotFoundError(`No user found with id ${id}`);
+    }
+
+    const result = await tmp.removeFriend(+friendId);
+
+    if (!result) {
+      throw new NotFoundError(`No friend found with id ${friendId}`);
+    }
+
+    res.status(200).json({msg: 'success'})
   }
+
 }
