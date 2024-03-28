@@ -9,7 +9,12 @@
 function errorHandler(err, req, res, next) {
   console.log('\nerror handler\n', err, '\n');
 
-  res.status(500).json({err: err.message});
+  const customError = {
+    code: err.code || 500,
+    message: err.message || 'Something went wrong. Try again later'
+  }
+
+  res.status(customError.code).json({err: customError.message});
 }
 
 module.exports = errorHandler;
