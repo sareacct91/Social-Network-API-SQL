@@ -9,7 +9,7 @@
 function errorHandler(err, req, res, next) {
   console.log('\nerror handler\n', err, '\n');
 
-  res.status(500).json({ err });
+  res.status(500).json({err: err.message});
 }
 
 module.exports = errorHandler;
