@@ -20,15 +20,15 @@ async function seed(req, res) {
   } = req.body;
 
   const users = getUsersObject(randomNum(minUser, maxUser));
-  const thoughts = getThoughtObject(randomNum(minThought, maxThought), users);
-
   const usersData = await User.bulkCreate(users);
+  await addFriend(usersData);
+
+  const thoughts = getThoughtObject(randomNum(minThought, maxThought), users);
   const thoughtsData = await Thought.bulkCreate(thoughts);
 
   const reactions = getReactionObject(randomNum(minReaction, maxReacction), users, thoughtsData.map(e => e.toJSON()))
   const reactionsData = await Reaction.bulkCreate(reactions);
 
-  console.log(thoughtsData);
   res.status(201).json({
     msg: 'seeded',
     size: {
@@ -44,7 +44,8 @@ async function seed(req, res) {
 
 /**
  * return a random number between 0 and [num]
- * @param {number} num upper bound of random gen
+ * @param {number} min lower bound of random gen
+ * @param {number} max upper bound of random gen
  * @returns {number} random gen between 0 and [num]
  */
 function randomNum(min, max) {
@@ -73,7 +74,7 @@ function getUsersObject(num) {
  * return an array of size [num] of thoughtdata
  * @param {number} num amount of thoughts
  * @param {{username: string, email: string}[]} users array of userdatas
- * @returns {{thoughtText: string, username: string}}
+ * @returns {{thoughtText: string, username: string}[]}
  */
 function getThoughtObject(num, users) {
   const thoughts = new Array(num);
@@ -88,7 +89,7 @@ function getThoughtObject(num, users) {
 }
 
 /**
- *
+ * return an array of size [num] of reationdata
  * @param {number} num maximum amount of reactions
  * @param {{username: string, email: string}[]} users array of user data
  * @param {{id: number, thoughtText: string, created_at: Date, username: string}[]} thoughts
@@ -107,4 +108,25 @@ function getReactionObject(num, users, thoughts) {
   return reactions;
 }
 
+/**
+ *
+ * @param {User[]} users
+ */
+async function addFriend(users) {
+  const p = [];
+
+  for (let i = 0; i < users.length; i++) {
+    for (let j = 0; j < randomNum(1, 10); j++) {
+      let friendId = randomNum(0, users.length - 1);
+
+      while (friendId === i) {
+        friendId = randomNum(0, users.length - 1);
+      }
+
+      p.push(users[i].addFriend(friendId));
+    }
+  }
+  
+  await Promise.allSettled(p);
+}
 module.exports = seed;
